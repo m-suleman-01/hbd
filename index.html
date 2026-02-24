@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>A Fun Project</title>
+    <title>Happy Birthday Choi Moi! 🎂💖</title>
     <style>
         /* ===== RESET & BASE ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -117,6 +117,14 @@
             90% { transform: translate(-2px, 0) rotate(-1deg); }
             100% { transform: translate(0,0) rotate(0); }
         }
+        @keyframes cardPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 8px rgba(245,158,11,0.4); }
+            50% { box-shadow: 0 0 28px rgba(245,158,11,0.8), 0 0 60px rgba(255,107,157,0.3); }
+        }
 
         /* ===== WELCOME SCREEN ===== */
         #welcome {
@@ -184,6 +192,8 @@
             box-shadow: 0 8px 30px rgba(255,107,157,0.4);
             animation: fadeInUp 0.8s ease-out 0.6s both;
             position: relative; overflow: hidden;
+            -webkit-appearance: none; appearance: none;
+            font-family: inherit;
         }
         .start-btn::after {
             content: ''; position: absolute;
@@ -268,6 +278,8 @@
             color: white; cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 6px 25px rgba(245,166,35,0.4);
+            -webkit-appearance: none; appearance: none;
+            font-family: inherit;
         }
         .transition-btn:hover {
             transform: translateY(-3px);
@@ -275,7 +287,7 @@
         }
         .transition-btn:active { transform: translateY(0) scale(0.97); }
 
-        /* ===== QUIZ SCREEN ===== */
+        /* ===== QUIZ SCREEN (Q&A Text Input) ===== */
         #quiz {
             background: linear-gradient(135deg, #F5EEFF, #FFEEF8, #FFF5E6);
         }
@@ -306,34 +318,66 @@
             text-align: center; margin-bottom: 28px;
             line-height: 1.4;
         }
-        .quiz-answers { display: flex; flex-direction: column; gap: 13px; }
-        .answer-btn {
-            padding: 17px 22px;
-            border: 2.5px solid rgba(192,132,252,0.25);
+        .quiz-input-area {
+            width: 100%;
+        }
+        .quiz-text-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2.5px solid rgba(192,132,252,0.3);
             border-radius: 18px;
-            background: rgba(255,255,255,0.85);
-            font-size: 1rem; font-weight: 600;
-            color: #555; cursor: pointer;
+            background: rgba(255,255,255,0.9);
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: #444;
+            outline: none;
             transition: all 0.3s ease;
-            text-align: left;
+            font-family: inherit;
+            resize: none;
+            min-height: 90px;
+            line-height: 1.5;
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
-            -webkit-appearance: none; appearance: none;
+        }
+        .quiz-text-input::placeholder {
+            color: #bbb;
+            font-weight: 400;
+        }
+        .quiz-text-input:focus {
+            border-color: var(--purple);
+            box-shadow: 0 0 0 4px rgba(192,132,252,0.15);
+            background: rgba(255,255,255,1);
+        }
+        .quiz-text-input.shake-input {
+            animation: shake 0.5s ease;
+        }
+        .quiz-text-input:not(:placeholder-shown) {
+            border-color: var(--pink-light);
+            background: rgba(255,240,248,0.9);
+        }
+        .quiz-submit-btn {
+            margin-top: 18px;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 60px;
+            background: linear-gradient(135deg, var(--pink), var(--purple));
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 25px rgba(255,107,157,0.35);
+            -webkit-appearance: none;
+            appearance: none;
             font-family: inherit;
+            width: 100%;
         }
-        .answer-btn:hover {
-            border-color: var(--purple);
-            background: rgba(192,132,252,0.08);
-            transform: translateX(6px);
-            box-shadow: 0 4px 15px rgba(192,132,252,0.15);
+        .quiz-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255,107,157,0.5);
         }
-        .answer-btn:active { transform: scale(0.97) translateX(3px); }
-        .answer-btn.chosen {
-            background: linear-gradient(135deg, rgba(192,132,252,0.15), rgba(255,107,157,0.15));
-            border-color: var(--purple);
-            color: var(--purple);
-            transform: translateX(8px);
-            box-shadow: 0 4px 20px rgba(192,132,252,0.2);
+        .quiz-submit-btn:active {
+            transform: translateY(0) scale(0.97);
         }
         .quiz-feedback {
             text-align: center; font-size: 1.15rem;
@@ -342,6 +386,13 @@
             background: linear-gradient(135deg, var(--pink), var(--purple));
             -webkit-background-clip: text; background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+        .quiz-char-count {
+            text-align: right;
+            font-size: 0.75rem;
+            color: #ccc;
+            margin-top: 6px;
+            font-weight: 400;
         }
 
         /* ===== OPENING SCREEN ===== */
@@ -373,7 +424,6 @@
         }
         .egg-container.opened .gift-reveal { opacity: 1; transform: translate(-50%,-50%) scale(1); }
 
-        /* Real Kinder Joy image egg with clip-path split */
         .kinder-egg {
             width: 360px; height: 460px; position: relative;
             filter: drop-shadow(0 20px 40px rgba(0,0,0,0.22));
@@ -434,6 +484,10 @@
             background-size: 300% 300%;
             animation: gradientShift 8s ease infinite;
             z-index: 40;
+            overflow-y: auto;
+            justify-content: flex-start;
+            padding-top: 30px;
+            padding-bottom: 40px;
         }
         .final-message {
             text-align: center; padding: 25px;
@@ -464,8 +518,134 @@
             margin-top: 8px !important;
             color: rgba(140,120,160,0.7) !important;
         }
+
+        /* ===== WISH MESSAGES ===== */
+        .wish-msg {
+            font-size: 1.2rem;
+            font-weight: 700;
+            opacity: 0;
+            transform: translateY(25px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+        .wish-msg.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .wish-msg.pink { color: var(--pink); }
+        .wish-msg.purple { color: var(--purple); }
+        .wish-msg.gold { color: var(--orange); }
+
+        /* ===== STICKY NOTES (Quiz Answers) ===== */
+        .sticky-notes-section {
+            width: 100%;
+            max-width: 550px;
+            margin: 20px auto;
+        }
+        .sticky-notes-title {
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--purple);
+            margin-bottom: 15px;
+        }
+        .sticky-notes-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            justify-content: center;
+            padding: 0 10px;
+        }
+        .sticky-note {
+            padding: 18px 16px;
+            border-radius: 6px;
+            width: calc(50% - 10px);
+            min-width: 155px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.1);
+            transform: rotate(var(--rot, 0deg));
+            transition: transform 0.3s ease;
+            text-align: left;
+            position: relative;
+            opacity: 0;
+            cursor: default;
+        }
+        .sticky-note::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            width: 32px; height: 12px;
+            background: rgba(255,107,157,0.55);
+            border-radius: 2px;
+        }
+        .sticky-note:hover {
+            transform: rotate(0deg) scale(1.05) !important;
+            z-index: 5;
+        }
+        .sticky-note .sn-q {
+            font-size: 0.72rem;
+            color: #92400e;
+            margin-bottom: 7px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+        .sticky-note .sn-a {
+            font-size: 0.92rem;
+            color: #78350f;
+            font-weight: 800;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        /* ===== FINAL BUTTONS ===== */
+        .final-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 28px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .final-buttons.show {
+            opacity: 1;
+        }
+        .btn-download {
+            padding: 15px 32px;
+            font-size: 1rem; font-weight: 700;
+            border: none; border-radius: 60px;
+            background: linear-gradient(135deg, #34d399, #06b6d4);
+            color: white; cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 22px rgba(52,211,153,0.4);
+            -webkit-appearance: none; appearance: none;
+            font-family: inherit;
+        }
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(52,211,153,0.55);
+        }
+        .btn-download:active { transform: translateY(0) scale(0.97); }
+
+        .btn-surprise {
+            padding: 15px 32px;
+            font-size: 1rem; font-weight: 700;
+            border: none; border-radius: 60px;
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: white; cursor: pointer;
+            transition: all 0.3s ease;
+            animation: pulseGlow 2s ease-in-out infinite;
+            -webkit-appearance: none; appearance: none;
+            font-family: inherit;
+        }
+        .btn-surprise:hover {
+            transform: translateY(-2px);
+        }
+        .btn-surprise:active { transform: translateY(0) scale(0.97); }
+
         .replay-btn {
-            margin-top: 35px; padding: 16px 40px;
+            padding: 15px 32px;
             font-size: 1rem; font-weight: 700;
             border: 2px solid rgba(255,255,255,0.7);
             border-radius: 60px;
@@ -516,86 +696,97 @@
             transform: translateX(-50%);
         }
 
-        /* ===== IMAGE LOADING INDICATOR ===== */
         .img-loading {
             width: 280px; height: 370px;
             display: flex; align-items: center; justify-content: center;
             color: #ccc; font-size: 3rem;
         }
-/* ===== PASSWORD OVERLAY WITH BLUR ===== */
-#passwordScreen {
-    position: fixed;
-    top:0; left:0; width:100%; height:100%;
-    background: rgba(0,0,0,0.35); /* thoda transparent */
-    display: flex; align-items: center; justify-content: center;
-    z-index: 9999;
-    backdrop-filter: blur(20px); /* ← background ko blur kar dega */
-    -webkit-backdrop-filter: blur(8px); /* safari support */
-}
 
-.password-modal {
-    background: #fff0f5;
-    padding: 35px 28px;
-    border-radius: 22px;
-    text-align: center;
-    box-shadow: 0 15px 50px rgba(0,0,0,0.25);
-    max-width: 320px;
-    width: 90%;
-    animation: fadeInUp 0.6s ease-out;
-}
+        /* ===== PASSWORD OVERLAY ===== */
+        #passwordScreen {
+            position: fixed;
+            top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.35);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .password-modal {
+            background: #fff0f5;
+            padding: 35px 28px;
+            border-radius: 22px;
+            text-align: center;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.25);
+            max-width: 320px;
+            width: 90%;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        .password-modal h2 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: #ff4d94;
+        }
+        .password-modal input {
+            width: 80%;
+            padding: 12px 14px;
+            font-size: 1rem;
+            border-radius: 12px;
+            border: 2px solid #ffb6c1;
+            margin-bottom: 18px;
+            outline: none;
+            text-align: center;
+            font-family: inherit;
+        }
+        .password-modal input:focus {
+            border-color: var(--pink);
+            box-shadow: 0 0 0 4px rgba(255,107,157,0.15);
+        }
+        .password-modal button {
+            padding: 12px 28px;
+            font-size: 1rem;
+            border-radius: 60px;
+            border: none;
+            background: linear-gradient(135deg, #FF6B9D, #C084FC);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        .password-modal button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255,107,157,0.4);
+        }
+        #passwordError {
+            color: #ff3b7f;
+            font-size: 0.9rem;
+            margin-top: 12px;
+            min-height: 20px;
+        }
 
-.password-modal h2 {
-    font-size: 1.4rem;
-    margin-bottom: 20px;
-    color: #ff4d94;
-}
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--pink-light); border-radius: 10px; }
 
-.password-modal input {
-    width: 80%;
-    padding: 12px 14px;
-    font-size: 1rem;
-    border-radius: 12px;
-    border: 2px solid #ffb6c1;
-    margin-bottom: 18px;
-    outline: none;
-    text-align: center;
-}
-
-.password-modal button {
-    padding: 12px 28px;
-    font-size: 1rem;
-    border-radius: 60px;
-    border: none;
-    background: linear-gradient(135deg, #FF6B9D, #C084FC);
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.password-modal button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255,107,157,0.4);
-}
-
-#passwordError {
-    color: #ff3b7f;
-    font-size: 0.9rem;
-    margin-top: 12px;
-    min-height: 20px;
-}
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 400px) {
+            .sticky-note { width: 100%; }
+            .final-buttons { flex-direction: column; align-items: center; }
+        }
     </style>
 </head>
 <body>
+
 <!-- ===== PASSWORD SCREEN ===== -->
 <div id="passwordScreen">
-    <div class="password-modal">
+    <div class="password-modal" id="passwordModal">
         <h2>Enter Password 🔒</h2>
         <input type="password" id="passwordInput" placeholder="DD-MM" />
         <button id="passwordBtn">Submit</button>
         <p id="passwordError"></p>
     </div>
 </div>
-
 
 <!-- ===== BACKGROUND PARTICLES ===== -->
 <div id="particles-container"></div>
@@ -636,7 +827,7 @@
     </div>
 </div>
 
-<!-- ===== SCREEN 4: QUIZ ===== -->
+<!-- ===== SCREEN 4: QUIZ (Q&A Text Input) ===== -->
 <div id="quiz" class="screen">
     <div class="quiz-container">
         <div class="progress-bar-bg">
@@ -644,7 +835,11 @@
         </div>
         <p class="quiz-progress-text" id="quizProgressText"></p>
         <h2 class="quiz-question" id="quizQuestion"></h2>
-        <div class="quiz-answers" id="quizAnswers"></div>
+        <div class="quiz-input-area">
+            <textarea class="quiz-text-input" id="quizTextInput" placeholder="Type your answer here... 💭" rows="3" maxlength="200"></textarea>
+            <div class="quiz-char-count" id="quizCharCount">0 / 200</div>
+            <button class="quiz-submit-btn" id="quizSubmitBtn">Next ➡️</button>
+        </div>
         <p class="quiz-feedback" id="quizFeedback"></p>
     </div>
 </div>
@@ -671,9 +866,13 @@
     <div class="final-message">
         <span class="final-emoji">🎂</span>
         <h1>Happy Birthday<br>Choi Moi! 🎉💖</h1>
-        <p>You are my one and only bestie! 💕</p>
-        <p class="final-sub">Thank you for being YOU ✨🥰</p>
-        <button class="replay-btn" id="replayBtn">Play Again 🔄</button>
+        <div id="wishMessagesContainer" style="margin-top:15px;"></div>
+        <div id="stickyNotesArea" class="sticky-notes-section" style="display:none;"></div>
+        <div class="final-buttons" id="finalButtons">
+            <button class="btn-surprise" id="bonusSurpriseBtn">Bonus Surprise 🎆</button>
+            <button class="btn-download" id="downloadBtn">Download Memories 📸</button>
+            <button class="replay-btn" id="replayBtn">Play Again 🔄</button>
+        </div>
     </div>
 </div>
 
@@ -685,11 +884,12 @@ let targetCount = 3;
 let caughtCount = 0;
 let currentQuestion = 0;
 let questionsToAsk = [];
+let quizAnswers = []; // Stores {question, answer} pairs
 let audioCtx = null;
 let gameRunning = false;
 
 // ================================================================
-// KINDER JOY IMAGE LOADING (with multiple fallbacks)
+// KINDER JOY IMAGE LOADING
 // ================================================================
 const kinderJoyImg = new Image();
 let kinderJoyLoaded = false;
@@ -697,9 +897,6 @@ let kinderJoySrc = "assets/images/kinderjoy.png";
 
 kinderJoyImg.src = kinderJoySrc;
 
-let currentImgIdx = 0;
-
-// Create a beautiful SVG Kinder Joy as ultimate fallback
 function createSVGFallback() {
     const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 270">' +
         '<defs>' +
@@ -739,7 +936,6 @@ kinderJoyImg.onload = function() {
 };
 
 kinderJoyImg.onerror = function() {
-    // URL failed — use guaranteed SVG fallback
     createSVGFallback();
 };
 
@@ -752,38 +948,42 @@ function setAllKinderImages(src) {
 }
 
 // ================================================================
-// QUESTIONS DATA
+// QUESTIONS DATA (Q&A — no multiple choice)
 // ================================================================
 const ALL_QUESTIONS = [
-    {
-        q: "Where did we first talk? 😜",
-        answers: ["Instagram DM 📱", "College Canteen 🍕", "Through a Friend 🤝", "Don't Remember 😅"],
-        feedbacks: ["Digital besties forever! 💫", "Food brought us together! 🍔", "Thank god for that friend! 🙏", "The vibes were instant though! ⚡"]
-    },
-    {
-        q: "Who is more crazy between us? 🤪",
-        answers: ["Obviously ME 🙋", "Definitely YOU 🫵", "Both Equally 🤝", "We're both saints 😇"],
-        feedbacks: ["Self-aware queen! 👑", "Takes one to know one! 😂", "Chaos squared! 💥", "Yeah right... sure 😏"]
-    },
-    {
-        q: "What is my favorite thing about you? 💕",
-        answers: ["Your Smile 😊", "Your Vibes ✨", "Your Heart 💖", "Everything! 🥰"],
-        feedbacks: ["It really is contagious! 😍", "Unmatched energy! ⚡", "The purest soul! 💎", "Correct answer bestie! 🏆"]
-    },
-    {
-        q: "Our friendship is best described as? ✨",
-        answers: ["Soulmates 💫", "Partners in Crime 🔥", "Chaos + Love 💕", "Legendary 👑"],
-        feedbacks: ["Written in the stars! ⭐", "FBI open up! 🚔😂", "The best combo ever! 💯", "History books material! 📚"]
-    },
-    {
-        q: "Who cares more? 😌",
-        answers: ["I do, obviously 💁", "You do, bestie 🥺", "We both do equally ❤️", "We pretend we don't 😏"],
-        feedbacks: ["We know you do! 💖", "Aww you noticed! 🥹", "That's the real truth! 💕", "But we really do tho! 🤗"]
-    }
+    { q: "Where did we first talk? 😜", placeholder: "Tell me the place or platform... 💬" },
+    { q: "Who is more crazy between us? 🤪", placeholder: "Be honest! Who's the wild one? 😂" },
+    { q: "What is my favorite thing about you? 💕", placeholder: "What do you think I love most? 🥰" },
+    { q: "Our friendship is best described as? ✨", placeholder: "Describe our bond in your words... 💫" },
+    { q: "Who cares more? 😌", placeholder: "Who's the more caring one? 🤗" }
+];
+
+const QUIZ_FEEDBACKS = [
+    "Aww, I remember that too! 🥹",
+    "Haha, I knew you'd say that! 😂",
+    "That's so sweet! 💖",
+    "Couldn't agree more! 🙌",
+    "You know me so well! 🥰",
+    "Perfect answer! 🎯",
+    "My heart just melted! 💗",
+    "Exactly what I was thinking! ⚡",
+    "This is why we're besties! 👯‍♀️",
+    "Aww stop it, you're making me blush! 😊"
+];
+
+const WISH_MESSAGES = [
+    { text: "You are my one and only bestie! 👯‍♀️", cls: "purple" },
+    { text: "I'm so grateful for all the crazy memories we share 😜", cls: "pink" },
+    { text: "Today, I wish you endless laughter, love, and Kinder Joys! 🥚💝", cls: "gold" },
+    { text: "May every day bring you as much happiness as you bring to everyone around you ✨", cls: "purple" },
+    { text: "You deserve the world and more 🌍💖", cls: "pink" },
+    { text: "Here's to more adventures, more laughter, and more crazy moments together! 🎉", cls: "gold" },
+    { text: "Never change, you beautiful soul! 🦋", cls: "purple" },
+    { text: "Love you forever and always, bestie! 💗🎀", cls: "pink" }
 ];
 
 // ================================================================
-// AUDIO ENGINE — Web Audio API
+// AUDIO ENGINE
 // ================================================================
 function initAudio() {
     if (!audioCtx) {
@@ -898,7 +1098,7 @@ function showScreen(id) {
 }
 
 // ================================================================
-// WELCOME SCREEN — Number Selector
+// WELCOME SCREEN
 // ================================================================
 document.querySelectorAll('.num-btn').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -952,7 +1152,6 @@ function resizeCanvas() {
 }
 window.addEventListener('resize', () => { if (gameRunning && canvas) resizeCanvas(); });
 
-// Mouse & Touch Controls
 function handlePointerMove(clientX) {
     if (!gameRunning) return;
     basket.x = clientX - basket.width / 2;
@@ -970,7 +1169,6 @@ document.addEventListener('touchmove', e => {
 }, { passive: false });
 
 function spawnEgg() {
-    // Bigger falling eggs
     const w = 140, h = 130;
     eggs.push({
         x: Math.random() * (canvas.width - w - 30) + 15,
@@ -984,32 +1182,26 @@ function spawnEgg() {
     });
 }
 
-// Draw Kinder Joy — uses real PNG when loaded, canvas fallback otherwise
 function drawKinderJoy(x, y, w, h, rotation) {
     ctx.save();
     ctx.translate(x + w/2, y + h/2);
     ctx.rotate(rotation || 0);
 
-    // Drop shadow
     ctx.beginPath();
     ctx.ellipse(2, h/2 + 4, w * 0.3, 5, 0, 0, Math.PI * 2);
     ctx.fillStyle = 'rgba(0,0,0,0.1)';
     ctx.fill();
 
     if (kinderJoyLoaded) {
-        // Real Kinder Joy PNG
         ctx.drawImage(kinderJoyImg, -w/2, -h/2, w, h);
     } else {
-        // Canvas-drawn fallback (shown briefly while image loads)
         drawKinderJoyFallback(-w/2, -h/2, w, h);
     }
 
     ctx.restore();
 }
 
-// Fallback canvas drawing if PNG hasn't loaded yet
 function drawKinderJoyFallback(x, y, w, h) {
-    // Bottom cream half
     ctx.beginPath();
     ctx.ellipse(x + w/2, y + h/2, w/2, h/2, 0, 0, Math.PI * 2);
     const botG = ctx.createLinearGradient(x, y + h * 0.45, x, y + h);
@@ -1021,7 +1213,6 @@ function drawKinderJoyFallback(x, y, w, h) {
     ctx.lineWidth = 1.2;
     ctx.stroke();
 
-    // Top orange half
     ctx.save();
     ctx.beginPath();
     ctx.rect(x - 2, y - 2, w + 4, h * 0.52 + 2);
@@ -1036,7 +1227,6 @@ function drawKinderJoyFallback(x, y, w, h) {
     ctx.fill();
     ctx.restore();
 
-    // Wavy red line
     ctx.beginPath();
     const my = y + h * 0.5;
     ctx.moveTo(x + 5, my);
@@ -1047,7 +1237,6 @@ function drawKinderJoyFallback(x, y, w, h) {
     ctx.lineCap = 'round';
     ctx.stroke();
 
-    // "K" letter
     ctx.fillStyle = 'rgba(255,255,255,0.95)';
     ctx.font = 'bold ' + Math.round(w * 0.3) + 'px Arial, sans-serif';
     ctx.textAlign = 'center';
@@ -1058,13 +1247,11 @@ function drawKinderJoyFallback(x, y, w, h) {
 function drawBasket(x, y, w, h) {
     ctx.save();
 
-    // Basket shadow
     ctx.beginPath();
     ctx.ellipse(x + w/2, y + h + 5, w * 0.45, 8, 0, 0, Math.PI * 2);
     ctx.fillStyle = 'rgba(0,0,0,0.08)';
     ctx.fill();
 
-    // Main body
     ctx.beginPath();
     ctx.moveTo(x + 12, y + 6);
     ctx.lineTo(x + w - 12, y + 6);
@@ -1081,7 +1268,6 @@ function drawBasket(x, y, w, h) {
     ctx.lineWidth = 2;
     ctx.stroke();
 
-    // Rim
     ctx.beginPath();
     ctx.ellipse(x + w/2, y + 6, w/2 - 2, 8, 0, 0, Math.PI * 2);
     const rimG = ctx.createLinearGradient(x, y - 2, x, y + 14);
@@ -1093,7 +1279,6 @@ function drawBasket(x, y, w, h) {
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // Weave lines
     ctx.strokeStyle = 'rgba(90,60,10,0.18)';
     ctx.lineWidth = 1;
     for (let i = 1; i <= 3; i++) {
@@ -1112,7 +1297,6 @@ function checkCatch(egg) {
     const bY = canvas.height - 95;
     const eggBottom = egg.y + egg.h;
     const eggCX = egg.x + egg.w / 2;
-    // Generous collision zone
     return eggBottom >= bY - 8 &&
            eggBottom <= bY + basket.height + 15 &&
            eggCX >= basket.x - 15 &&
@@ -1120,15 +1304,15 @@ function checkCatch(egg) {
 }
 
 function showCatchEffect(x, y) {
+    const msgs = ['+1 🥚', 'Nice! 😍', 'Got it! ✨', 'Yummy! 😋'];
     const el = document.createElement('div');
     el.className = 'catch-text';
-    el.textContent = '+1 🥚';
+    el.textContent = msgs[Math.floor(Math.random() * msgs.length)];
     el.style.left = x + 'px';
     el.style.top = y + 'px';
     document.getElementById('game').appendChild(el);
     setTimeout(() => el.remove(), 1000);
 
-    // Sparkles
     for (let i = 0; i < 8; i++) {
         const sp = document.createElement('div');
         sp.className = 'sparkle';
@@ -1144,7 +1328,6 @@ function gameLoop(ts) {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Background gradient
     const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
     bg.addColorStop(0, '#E8F4FD');
     bg.addColorStop(0.4, '#FFF0F5');
@@ -1153,7 +1336,6 @@ function gameLoop(ts) {
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Ground
     const groundY = canvas.height - 35;
     const grdG = ctx.createLinearGradient(0, groundY, 0, canvas.height);
     grdG.addColorStop(0, '#C8E6C0');
@@ -1169,14 +1351,12 @@ function gameLoop(ts) {
     ctx.closePath();
     ctx.fill();
 
-    // Decorative clouds
     ctx.fillStyle = 'rgba(255,255,255,0.5)';
     const cx1 = ((ts * 0.02) % (canvas.width + 200)) - 100;
     drawCloud(ctx, cx1, 60, 0.8);
     const cx2 = ((ts * 0.015 + 300) % (canvas.width + 200)) - 100;
     drawCloud(ctx, cx2, 100, 0.6);
 
-    // Hide instruction after 3 seconds
     if (!instructionHidden && ts - gameStartTime > 3000) {
         instructionHidden = true;
         const instr = document.getElementById('gameInstruction');
@@ -1184,7 +1364,6 @@ function gameLoop(ts) {
         instr.style.transition = 'opacity 0.5s';
     }
 
-    // Spawn eggs
     const elapsed = ts - gameStartTime;
     const spawnInt = 1200 + Math.random() * 500;
     if (elapsed - lastSpawn > spawnInt || lastSpawn === 0) {
@@ -1192,7 +1371,6 @@ function gameLoop(ts) {
         lastSpawn = elapsed;
     }
 
-    // Update and draw eggs
     const basketY = canvas.height - 95;
     for (let i = eggs.length - 1; i >= 0; i--) {
         const egg = eggs[i];
@@ -1228,7 +1406,6 @@ function gameLoop(ts) {
         drawKinderJoy(egg.x + wx, egg.y, egg.w, egg.h, egg.rotation);
     }
 
-    // Draw basket
     drawBasket(basket.x, basketY, basket.width, basket.height);
 
     requestAnimationFrame(gameLoop);
@@ -1260,11 +1437,31 @@ function showTransition() {
 document.getElementById('transitionBtn').addEventListener('click', startQuiz);
 
 // ================================================================
-// QUIZ
+// QUIZ — Q&A TEXT INPUT (no multiple choice)
 // ================================================================
+const quizTextInput = document.getElementById('quizTextInput');
+const quizSubmitBtn = document.getElementById('quizSubmitBtn');
+const quizCharCount = document.getElementById('quizCharCount');
+
+// Character counter
+quizTextInput.addEventListener('input', function() {
+    quizCharCount.textContent = this.value.length + ' / 200';
+});
+
+// Enter to submit (Shift+Enter for newline)
+quizTextInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        submitQuizAnswer();
+    }
+});
+
+quizSubmitBtn.addEventListener('click', submitQuizAnswer);
+
 function startQuiz() {
     initAudio(); playClickSound();
     currentQuestion = 0;
+    quizAnswers = [];
 
     const shuffled = [...ALL_QUESTIONS].sort(() => Math.random() - 0.5);
     questionsToAsk = shuffled.slice(0, targetCount);
@@ -1288,40 +1485,72 @@ function renderQuestion() {
     qEl.offsetHeight;
     qEl.style.animation = 'fadeInUp 0.5s ease-out';
 
-    const aEl = document.getElementById('quizAnswers');
-    aEl.innerHTML = '';
+    // Reset input
+    quizTextInput.value = '';
+    quizTextInput.placeholder = q.placeholder || "Type your answer here... 💭";
+    quizCharCount.textContent = '0 / 200';
     document.getElementById('quizFeedback').textContent = '';
+    quizSubmitBtn.disabled = false;
+    quizSubmitBtn.style.opacity = '1';
 
-    q.answers.forEach((ans, idx) => {
-        const btn = document.createElement('button');
-        btn.className = 'answer-btn';
-        btn.textContent = ans;
-        btn.style.animation = 'fadeInUp 0.4s ease-out ' + (idx * 0.08) + 's both';
-        btn.addEventListener('click', () => handleAnswer(idx));
-        aEl.appendChild(btn);
-    });
+    // Update button text
+    if (currentQuestion === total - 1) {
+        quizSubmitBtn.textContent = 'Finish ✅';
+    } else {
+        quizSubmitBtn.textContent = 'Next ➡️';
+    }
+
+    // Focus input after animation
+    setTimeout(() => quizTextInput.focus(), 500);
 }
 
-function handleAnswer(idx) {
+function submitQuizAnswer() {
+    const answer = quizTextInput.value.trim();
+
+    if (!answer) {
+        document.getElementById('quizFeedback').textContent = "Don't leave it blank! 😤";
+        quizTextInput.classList.add('shake-input');
+        setTimeout(() => quizTextInput.classList.remove('shake-input'), 500);
+        if (navigator.vibrate) navigator.vibrate(100);
+        return;
+    }
+
     initAudio(); playPopSound();
 
-    const q = questionsToAsk[currentQuestion];
-    const btns = document.querySelectorAll('.answer-btn');
-    btns.forEach(b => b.style.pointerEvents = 'none');
-    btns[idx].classList.add('chosen');
+    // Save Q&A pair
+    quizAnswers.push({
+        question: questionsToAsk[currentQuestion].q,
+        answer: answer
+    });
 
+    // Show cute feedback
+    const feedback = QUIZ_FEEDBACKS[Math.floor(Math.random() * QUIZ_FEEDBACKS.length)];
+    document.getElementById('quizFeedback').textContent = feedback;
+
+    // Disable input while transitioning
+    quizSubmitBtn.disabled = true;
+    quizSubmitBtn.style.opacity = '0.5';
+    quizTextInput.disabled = true;
     if (navigator.vibrate) navigator.vibrate(30);
-    document.getElementById('quizFeedback').textContent = q.feedbacks[idx];
 
-    setTimeout(() => {
-        currentQuestion++;
-        if (currentQuestion >= questionsToAsk.length) {
-            document.getElementById('progressBar').style.width = '100%';
-            setTimeout(() => showScreen('opening'), 600);
-        } else {
+    // Update progress
+    const total = questionsToAsk.length;
+    document.getElementById('progressBar').style.width =
+        ((currentQuestion + 1) / total * 100) + '%';
+
+    currentQuestion++;
+
+    if (currentQuestion >= total) {
+        setTimeout(() => {
+            quizTextInput.disabled = false;
+            showScreen('opening');
+        }, 1200);
+    } else {
+        setTimeout(() => {
+            quizTextInput.disabled = false;
             renderQuestion();
-        }
-    }, 1600);
+        }, 1200);
+    }
 }
 
 // ================================================================
@@ -1344,12 +1573,10 @@ function openEgg() {
 
     container.style.animation = 'none';
 
-    // Phase 1: Shake + crack
     container.classList.add('cracking');
     playCrackSound();
     if (navigator.vibrate) navigator.vibrate([40, 25, 40, 25, 80]);
 
-    // Phase 2: Open egg halves (split apart with clip-path)
     setTimeout(() => {
         container.classList.remove('cracking');
         container.classList.add('opened');
@@ -1358,15 +1585,325 @@ function openEgg() {
         playCelebrationMelody();
         createConfetti();
 
-        // Phase 3: Final celebration
         setTimeout(() => {
             showScreen('final');
             setTimeout(() => {
+                startFinalWish();
                 createFloatingHearts();
                 playBackgroundMusic();
             }, 500);
         }, 2200);
     }, 750);
+}
+
+// ================================================================
+// FINAL BIRTHDAY WISH — Extended Interactive Experience
+// ================================================================
+function startFinalWish() {
+    const container = document.getElementById('wishMessagesContainer');
+    container.innerHTML = '';
+
+    // Display wish messages one by one
+    WISH_MESSAGES.forEach((msg, i) => {
+        const div = document.createElement('div');
+        div.className = 'wish-msg ' + msg.cls;
+        div.textContent = msg.text;
+        container.appendChild(div);
+
+        setTimeout(() => {
+            div.classList.add('visible');
+            if (i > 0) playPopSound();
+        }, i * 1500 + 800);
+    });
+
+    // After all wish messages, show sticky notes + buttons
+    const totalDelay = WISH_MESSAGES.length * 1500 + 1500;
+
+    setTimeout(() => {
+        displayStickyNotes();
+        createConfetti();
+    }, totalDelay);
+
+    setTimeout(() => {
+        document.getElementById('finalButtons').classList.add('show');
+    }, totalDelay + 1500);
+}
+
+function displayStickyNotes() {
+    const area = document.getElementById('stickyNotesArea');
+    area.style.display = 'block';
+    area.innerHTML = '<h3 class="sticky-notes-title">Your Answers 📝✨</h3><div class="sticky-notes-grid" id="stickyGrid"></div>';
+
+    const grid = document.getElementById('stickyGrid');
+    const colors = ['#fde68a','#a7f3d0','#fcd5ce','#c4b5fd','#93c5fd'];
+
+    quizAnswers.forEach((qa, i) => {
+        const note = document.createElement('div');
+        note.className = 'sticky-note';
+        note.style.background = colors[i % colors.length];
+        note.style.setProperty('--rot', ((Math.random() - 0.5) * 6) + 'deg');
+
+        note.innerHTML = '<div class="sn-q">' + escapeHTML(qa.question) + '</div>' +
+                         '<div class="sn-a">"' + escapeHTML(qa.answer) + '"</div>';
+
+        grid.appendChild(note);
+
+        setTimeout(() => {
+            note.style.transition = 'all 0.5s ease';
+            note.style.opacity = '1';
+        }, i * 300 + 200);
+    });
+}
+
+function escapeHTML(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+// ================================================================
+// BONUS SURPRISE
+// ================================================================
+let surpriseCount = 0;
+document.getElementById('bonusSurpriseBtn').addEventListener('click', bonusSurprise);
+
+function bonusSurprise() {
+    surpriseCount++;
+    initAudio();
+    playCelebrationMelody();
+    if (navigator.vibrate) navigator.vibrate([50, 30, 50, 30, 100, 50, 200]);
+
+    // Mega confetti
+    createConfetti();
+    setTimeout(() => createConfetti(), 300);
+    setTimeout(() => createConfetti(), 600);
+
+    // Fireworks
+    for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+            createFirework(
+                Math.random() * window.innerWidth,
+                Math.random() * window.innerHeight * 0.5
+            );
+        }, i * 250);
+    }
+
+    // Extra message
+    const extras = [
+        "You're the BEST! 🏆",
+        "Party harder! 🎊",
+        "More love for you! 💗",
+        "Friendship goals! 🎯",
+        "Keep being amazing! ⭐",
+        "You light up every room! 🌟",
+        "The world is lucky to have you! 🌍",
+    ];
+
+    const msg = document.createElement('div');
+    msg.className = 'wish-msg gold visible';
+    msg.style.fontSize = '1.4rem';
+    msg.style.animation = 'cardPop 0.5s ease';
+    msg.textContent = extras[(surpriseCount - 1) % extras.length];
+    document.getElementById('wishMessagesContainer').appendChild(msg);
+
+    // Scroll to bottom
+    document.getElementById('final').scrollTop = document.getElementById('final').scrollHeight;
+}
+
+// ================================================================
+// FIREWORK EFFECT
+// ================================================================
+function createFirework(x, y) {
+    const colors = ['#ff6b9d','#c084fc','#fde68a','#34d399','#93c5fd','#f59e0b'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const count = 18;
+
+    for (let i = 0; i < count; i++) {
+        const angle = (Math.PI * 2 * i) / count;
+        const dist = Math.random() * 80 + 40;
+        const particle = document.createElement('div');
+        particle.style.cssText = 'position:fixed; width:5px; height:5px; border-radius:50%;' +
+            'background:' + color + '; left:' + x + 'px; top:' + y + 'px;' +
+            'pointer-events:none; z-index:9999;' +
+            'transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);';
+        document.body.appendChild(particle);
+
+        requestAnimationFrame(() => {
+            particle.style.transform = 'translate(' + (Math.cos(angle) * dist) + 'px,' + (Math.sin(angle) * dist) + 'px) scale(0)';
+            particle.style.opacity = '0';
+        });
+
+        setTimeout(() => particle.remove(), 1000);
+    }
+}
+
+// ================================================================
+// DOWNLOAD AS JPG
+// ================================================================
+document.getElementById('downloadBtn').addEventListener('click', downloadJPG);
+
+function downloadJPG() {
+    const c = document.createElement('canvas');
+    const padding = 60;
+    const noteHeight = 120;
+    const headerHeight = 280;
+    const footerHeight = 100;
+    c.width = 800;
+    c.height = headerHeight + quizAnswers.length * (noteHeight + 20) + footerHeight + 60;
+    const cx = c.getContext('2d');
+
+    // Background gradient
+    const grad = cx.createLinearGradient(0, 0, 800, c.height);
+    grad.addColorStop(0, '#fce4ec');
+    grad.addColorStop(0.3, '#f3e5f5');
+    grad.addColorStop(0.6, '#e8eaf6');
+    grad.addColorStop(1, '#fff9c4');
+    cx.fillStyle = grad;
+    cx.fillRect(0, 0, 800, c.height);
+
+    // Decorative border
+    cx.strokeStyle = '#ff6b9d';
+    cx.lineWidth = 6;
+    roundRect(cx, 18, 18, 764, c.height - 36, 20);
+    cx.stroke();
+    cx.strokeStyle = '#c084fc';
+    cx.lineWidth = 2;
+    roundRect(cx, 26, 26, 748, c.height - 52, 16);
+    cx.stroke();
+
+    // Decorative dots at corners
+    const dotColors = ['#ff6b9d', '#c084fc', '#fbbf24', '#34d399'];
+    [[40, 40], [760, 40], [40, c.height - 40], [760, c.height - 40]].forEach((pos, i) => {
+        cx.beginPath();
+        cx.arc(pos[0], pos[1], 6, 0, Math.PI * 2);
+        cx.fillStyle = dotColors[i];
+        cx.fill();
+    });
+
+    // Title emoji
+    cx.font = '40px serif';
+    cx.textAlign = 'center';
+    cx.fillText('🎂', 400, 70);
+
+    // Title
+    cx.fillStyle = '#ff6b9d';
+    cx.font = 'bold 38px Segoe UI, sans-serif';
+    cx.fillText('Happy Birthday Choi Moi! 💖', 400, 115);
+
+    cx.fillStyle = '#c084fc';
+    cx.font = '20px Segoe UI, sans-serif';
+    cx.fillText('A Special Birthday Memory 🎀', 400, 150);
+
+    // Decorative line
+    cx.strokeStyle = '#fbbf24';
+    cx.lineWidth = 2;
+    cx.beginPath();
+    cx.moveTo(100, 172);
+    cx.lineTo(700, 172);
+    cx.stroke();
+
+    // Stats line
+    cx.fillStyle = '#888';
+    cx.font = '16px Segoe UI, sans-serif';
+    cx.fillText(
+        targetCount + ' Kinder Joy' + (targetCount > 1 ? 's' : '') + ' caught 🥚  |  ' +
+        quizAnswers.length + ' Question' + (quizAnswers.length > 1 ? 's' : '') + ' answered 📝',
+        400, 205
+    );
+
+    // Section title
+    cx.fillStyle = '#c084fc';
+    cx.font = 'bold 22px Segoe UI, sans-serif';
+    cx.fillText('✨ Our Friendship Memories ✨', 400, 250);
+
+    // Quiz answers as sticky notes
+    let y = 280;
+    const noteColors = ['#fde68a','#a7f3d0','#fcd5ce','#c4b5fd','#93c5fd'];
+
+    quizAnswers.forEach((qa, i) => {
+        // Sticky note background with shadow
+        cx.save();
+        cx.shadowColor = 'rgba(0,0,0,0.1)';
+        cx.shadowBlur = 12;
+        cx.shadowOffsetY = 4;
+        cx.fillStyle = noteColors[i % noteColors.length];
+        roundRect(cx, 70, y, 660, noteHeight, 8);
+        cx.fill();
+        cx.restore();
+
+        // Tape on top
+        cx.fillStyle = 'rgba(255,107,157,0.5)';
+        roundRect(cx, 370, y - 6, 60, 14, 3);
+        cx.fill();
+
+        // Question
+        cx.fillStyle = '#92400e';
+        cx.font = 'bold 14px Segoe UI, sans-serif';
+        cx.textAlign = 'left';
+        cx.fillText(qa.question, 90, y + 32);
+
+        // Answer with word wrap
+        cx.fillStyle = '#4a4a6a';
+        cx.font = 'bold 18px Segoe UI, sans-serif';
+
+        const maxWidth = 600;
+        const words = qa.answer.split(' ');
+        let line = '"';
+        let lineY = y + 65;
+
+        words.forEach(word => {
+            const test = line + word + ' ';
+            if (cx.measureText(test).width > maxWidth) {
+                cx.fillText(line, 90, lineY);
+                line = word + ' ';
+                lineY += 26;
+            } else {
+                line = test;
+            }
+        });
+        cx.fillText(line.trim() + '"', 90, lineY);
+
+        y += noteHeight + 20;
+    });
+
+    // Footer
+    y += 15;
+    cx.textAlign = 'center';
+
+    cx.fillStyle = '#ff6b9d';
+    cx.font = 'bold 20px Segoe UI, sans-serif';
+    cx.fillText('Made with love 💗 Happy Birthday! 🎉', 400, y);
+
+    cx.fillStyle = '#aaa';
+    cx.font = '14px Segoe UI, sans-serif';
+    cx.fillText(
+        new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+        400, y + 28
+    );
+
+    // Download
+    const link = document.createElement('a');
+    link.download = 'ChoiMoi_Birthday_Memories.jpg';
+    link.href = c.toDataURL('image/jpeg', 0.95);
+    link.click();
+
+    // Celebration feedback
+    playPopSound();
+    if (navigator.vibrate) navigator.vibrate([50, 30, 100]);
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
 }
 
 // ================================================================
@@ -1376,7 +1913,7 @@ function createConfetti() {
     const colors = ['#FF6B9D','#C084FC','#FFBE98','#87CEEB','#FFD700',
                     '#98FB98','#FF69B4','#00CED1','#FF4500','#9370DB'];
 
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 80; i++) {
         const piece = document.createElement('div');
         piece.className = 'confetti-piece';
         const size = Math.random() * 11 + 5;
@@ -1423,7 +1960,6 @@ function createFloatingHearts() {
         setTimeout(() => h.remove(), 10000);
     }
 
-    // Initial burst
     for (let i = 0; i < 18; i++) {
         setTimeout(spawnHeart, i * 80);
     }
@@ -1438,31 +1974,30 @@ document.getElementById('replayBtn').addEventListener('click', replay);
 function replay() {
     initAudio(); playClickSound();
 
-    // Reset state
     targetCount = 3; caughtCount = 0;
     currentQuestion = 0; eggOpened = false;
     gameRunning = false; eggs = [];
+    quizAnswers = []; surpriseCount = 0;
 
-    // Reset egg UI
     const container = document.getElementById('eggContainer');
     container.classList.remove('cracking', 'opened');
     container.style.animation = '';
     document.getElementById('openBtn').classList.remove('hidden');
 
-    // Re-set the egg images in case they were cleared
-    if (kinderJoySrc) {
-        setAllKinderImages(kinderJoySrc);
-    }
+    if (kinderJoySrc) setAllKinderImages(kinderJoySrc);
 
-    // Clear intervals
     if (heartInterval) { clearInterval(heartInterval); heartInterval = null; }
     if (bgMusicInterval) { clearInterval(bgMusicInterval); bgMusicInterval = null; }
 
-    // Remove floating elements
     document.querySelectorAll('.floating-heart,.confetti-piece,.catch-text,.sparkle')
         .forEach(el => el.remove());
 
-    // Reset selector
+    // Reset final screen elements
+    document.getElementById('wishMessagesContainer').innerHTML = '';
+    document.getElementById('stickyNotesArea').style.display = 'none';
+    document.getElementById('stickyNotesArea').innerHTML = '';
+    document.getElementById('finalButtons').classList.remove('show');
+
     document.querySelectorAll('.num-btn').forEach(b => b.classList.remove('selected'));
     document.querySelector('.num-btn[data-num="3"]').classList.add('selected');
 
@@ -1470,35 +2005,62 @@ function replay() {
 }
 
 // ================================================================
-// INITIALIZATION
+// PASSWORD
 // ================================================================
-function init() {
-    createBackgroundParticles();
-}
-init();
-// ===== PASSWORD FUNCTION =====
 const passwordScreen = document.getElementById('passwordScreen');
 const passwordInput = document.getElementById('passwordInput');
 const passwordBtn = document.getElementById('passwordBtn');
 const passwordError = document.getElementById('passwordError');
 
 passwordBtn.addEventListener('click', checkPassword);
-passwordInput.addEventListener('keypress', function(e){
-    if(e.key === 'Enter') checkPassword();
+passwordInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') checkPassword();
 });
 
 function checkPassword() {
     const pass = passwordInput.value.trim();
-    if(pass === "28-02") {
-        passwordScreen.style.display = "none";
+    if (pass === "28-02") {
+        document.getElementById('passwordModal').style.animation = 'none';
+        document.getElementById('passwordModal').offsetHeight;
+        document.getElementById('passwordModal').style.transition = 'all 0.5s ease';
+        document.getElementById('passwordModal').style.transform = 'scale(1.1)';
+        document.getElementById('passwordModal').style.opacity = '0';
+        passwordError.textContent = 'Access Granted! 🎉';
+        passwordError.style.color = '#10b981';
+        playPopSound();
+
+        setTimeout(() => {
+            passwordScreen.style.transition = 'opacity 0.4s ease';
+            passwordScreen.style.opacity = '0';
+            setTimeout(() => {
+                passwordScreen.style.display = "none";
+                createConfetti();
+            }, 400);
+        }, 600);
     } else {
-        passwordError.textContent = "Incorrect password! ❌";
+        passwordError.textContent = "Incorrect password! Try again 🙈";
+        passwordError.style.color = '#ff3b7f';
         passwordInput.value = "";
         passwordInput.focus();
+
+        // Shake animation
+        const modal = document.getElementById('passwordModal');
+        modal.style.animation = 'none';
+        modal.offsetHeight;
+        modal.style.animation = 'shake 0.5s ease';
+        if (navigator.vibrate) navigator.vibrate(200);
     }
 }
 
-// Focus input on page load
+// ================================================================
+// INITIALIZATION
+// ================================================================
+function init() {
+    createBackgroundParticles();
+    initAudio();
+}
+init();
+
 window.addEventListener('load', () => passwordInput.focus());
 </script>
 </body>

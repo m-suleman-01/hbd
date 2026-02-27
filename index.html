@@ -951,39 +951,38 @@ function setAllKinderImages(src) {
 // QUESTIONS DATA (Q&A — no multiple choice)
 // ================================================================
 const ALL_QUESTIONS = [
-    { q: "Where did we first talk? 😜", placeholder: "Tell me the place or platform... 💬" },
-    { q: "Who is more crazy between us? 🤪", placeholder: "Be honest! Who's the wild one? 😂" },
-    { q: "What is my favorite thing about you? 💕", placeholder: "What do you think I love most? 🥰" },
-    { q: "Our friendship is best described as? ✨", placeholder: "Describe our bond in your words... 💫" },
-    { q: "Who cares more? 😌", placeholder: "Who's the more caring one? 🤗" }
+    { q: "Have you ever caught yourself telling a story about me to someone else without thinking? 😏📖", placeholder: "Spill the story… I’m curious! 😂" },
+    { q: "Have you ever planned to tell me something but didn’t at the last second? 🤫⌛", placeholder: "Come on, tell me! 😏" },
+    { q: "Have you ever remembered something small I said/did and it made you happy all day? 😌💭", placeholder: "Which little thing? 💖" },
+    { q: "What kind of conversation makes you feel more connected with me? 🗣️✨", placeholder: "Be honest… what clicks the most? 😎" },
+    { q: "An honest compliment for me on this day? 😎🎂", placeholder: "Don’t hold back! 🥰" }
 ];
 
 const QUIZ_FEEDBACKS = [
-    "Aww, I remember that too! 🥹",
-    "Haha, I knew you'd say that! 😂",
-    "That's so sweet! 💖",
-    "Couldn't agree more! 🙌",
-    "You know me so well! 🥰",
-    "Perfect answer! 🎯",
-    "My heart just melted! 💗",
-    "Exactly what I was thinking! ⚡",
-    "This is why we're besties! 👯‍♀️",
-    "Aww stop it, you're making me blush! 😊"
+    "Haha, I can totally imagine that story! 😆", 
+    "Aww, you kept it a secret huh? 🤭", 
+    "Yesss, that little thing really counts! 🥹", 
+    "Oh wow, I feel the connection too! 💫", 
+    "Stop it, you’re making me smile! 😌", 
+    "Haha, I love that answer! 😂", 
+    "Aww, that’s so thoughtful of you! 💖", 
+    "Exactly what I was hoping you’d say 😏", 
+    "You really know me too well! 🥰", 
+    "Wow, that compliment just made my day! 🎉"
 ];
 
 const WISH_MESSAGES = [
-    { text: "You are my one and only bestie! 👯‍♀️", cls: "purple" },
-    { text: "I'm so grateful for all the crazy memories we share 😜", cls: "pink" },
-    { text: "Today, I wish you endless laughter, love, and Kinder Joys! 🥚💝", cls: "gold" },
-    { text: "May every day bring you as much happiness as you bring to everyone around you ✨", cls: "purple" },
-    { text: "You deserve the world and more 🌍💖", cls: "pink" },
-    { text: "Here's to more adventures, more laughter, and more crazy moments together! 🎉", cls: "gold" },
-    { text: "Never change, you beautiful soul! 🦋", cls: "purple" },
-    { text: "Love you forever and always, bestie! 💗🎀", cls: "pink" }
+    { text: "**You will be awarded with a real Kinder Joy when the cringe word goes extinct 🥱😂**", cls: "purple" },
+    { text: "Here’s to more random laughs, silly stories, and gossips 🤣🤣 😜💫", cls: "pink" },
+    { text: "May your day be as special and amazing as you are 🥰✨", cls: "gold" },
+    { text: "Another year older, wiser… but still annoyingly cute 😌🎂", cls: "purple" },
+    { text: "You make ordinary days feel extra fun, never stop being you 😎💖", cls: "pink" },
+    { text: "Thanks for making life less boring and more us 😏😂", cls: "gold" },
+    { text: "Keep smiling, keep teasing, and keep being amazing 🥹💫", cls: "purple" }
 ];
 
 // ================================================================
-// AUDIO ENGINE
+// AUDIO ENGINE (UPDATED)
 // ================================================================
 function initAudio() {
     if (!audioCtx) {
@@ -992,7 +991,7 @@ function initAudio() {
     if (audioCtx.state === 'suspended') audioCtx.resume();
 }
 
-function playTone(freq, duration, type = 'sine', vol = 0.25) {
+function playTone(freq, duration, type = 'sine', vol = 0.5) { // volume increased
     if (!audioCtx) return;
     try {
         const osc = audioCtx.createOscillator();
@@ -1009,18 +1008,18 @@ function playTone(freq, duration, type = 'sine', vol = 0.25) {
 }
 
 function playCatchSound() {
-    playTone(523, 0.1, 'sine', 0.3);
-    setTimeout(() => playTone(659, 0.1, 'sine', 0.25), 70);
-    setTimeout(() => playTone(784, 0.15, 'sine', 0.25), 140);
+    playTone(523, 0.1, 'sine', 0.5); // louder
+    setTimeout(() => playTone(659, 0.1, 'sine', 0.45), 50); // shorter delay for faster feel
+    setTimeout(() => playTone(784, 0.15, 'sine', 0.45), 100); // faster
 }
 
 function playPopSound() {
-    playTone(600, 0.12, 'sine', 0.3);
-    setTimeout(() => playTone(900, 0.08, 'sine', 0.15), 40);
+    playTone(600, 0.12, 'sine', 0.5);
+    setTimeout(() => playTone(900, 0.08, 'sine', 0.3), 30); // faster
 }
 
 function playClickSound() {
-    playTone(500, 0.07, 'sine', 0.15);
+    playTone(500, 0.07, 'sine', 0.35); // louder
 }
 
 function playCrackSound() {
@@ -1030,12 +1029,12 @@ function playCrackSound() {
         const buffer = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
         const data = buffer.getChannelData(0);
         for (let i = 0; i < bufSize; i++) {
-            data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufSize, 2.5) * 0.8;
+            data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufSize, 2.5) * 1.0; // louder
         }
         const src = audioCtx.createBufferSource();
         src.buffer = buffer;
         const gain = audioCtx.createGain();
-        gain.gain.setValueAtTime(0.45, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.6, audioCtx.currentTime); // louder
         src.connect(gain);
         gain.connect(audioCtx.destination);
         src.start();
@@ -1049,8 +1048,8 @@ function playCelebrationMelody() {
     ];
     let t = 0;
     notes.forEach(([f, d]) => {
-        setTimeout(() => playTone(f, d * 0.85, 'sine', 0.18), t * 1000);
-        t += d * 0.55;
+        setTimeout(() => playTone(f, d * 0.85, 'sine', 0.35), t * 1000); // louder
+        t += d * 0.45; // faster tempo
     });
 }
 
@@ -1063,10 +1062,10 @@ function playBackgroundMusic() {
         if (!document.getElementById('final').classList.contains('active')) {
             clearInterval(bgMusicInterval); bgMusicInterval = null; return;
         }
-        playTone(melody[idx % melody.length], 0.7, 'sine', 0.08);
-        playTone(melody[idx % melody.length] / 2, 0.7, 'triangle', 0.04);
+        playTone(melody[idx % melody.length], 0.7, 'sine', 0.15); // slightly louder
+        playTone(melody[idx % melody.length] / 2, 0.7, 'triangle', 0.08); // louder
         idx++;
-    }, 500);
+    }, 350); // faster interval
 }
 
 // ================================================================

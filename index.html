@@ -991,7 +991,7 @@ function initAudio() {
     if (audioCtx.state === 'suspended') audioCtx.resume();
 }
 
-function playTone(freq, duration, type = 'sine', vol = 0.5) { // volume increased
+function playTone(freq, duration, type = 'sine', vol = 0.8) { // volume increased
     if (!audioCtx) return;
     try {
         const osc = audioCtx.createOscillator();
@@ -1014,8 +1014,8 @@ function playCatchSound() {
 }
 
 function playPopSound() {
-    playTone(600, 0.12, 'sine', 0.5);
-    setTimeout(() => playTone(900, 0.08, 'sine', 0.3), 30); // faster
+    playTone(600, 0.12, 'sine', 0.1);
+    setTimeout(() => playTone(900, 0.08, 'sine', 0.010), 30); // faster
 }
 
 function playClickSound() {
@@ -1048,7 +1048,7 @@ function playCelebrationMelody() {
     ];
     let t = 0;
     notes.forEach(([f, d]) => {
-        setTimeout(() => playTone(f, d * 0.85, 'sine', 0.35), t * 1000); // louder
+        setTimeout(() => playTone(f, d * 0.85, 'sine', 0.70), t * 1000); // louder
         t += d * 0.45; // faster tempo
     });
 }
@@ -1062,8 +1062,8 @@ function playBackgroundMusic() {
         if (!document.getElementById('final').classList.contains('active')) {
             clearInterval(bgMusicInterval); bgMusicInterval = null; return;
         }
-        playTone(melody[idx % melody.length], 0.7, 'sine', 0.15); // slightly louder
-        playTone(melody[idx % melody.length] / 2, 0.7, 'triangle', 0.08); // louder
+        playTone(melody[idx % melody.length], 0.7, 'sine', 0.30); // slightly louder
+        playTone(melody[idx % melody.length] / 2, 0.7, 'triangle', 0.24); // louder
         idx++;
     }, 350); // faster interval
 }
